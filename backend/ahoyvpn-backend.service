@@ -1,0 +1,22 @@
+[Unit]
+Description=AhoyVPN Backend API Server
+After=network.target postgresql.service redis-server.service
+Wants=network.target postgresql.service redis-server.service
+
+[Service]
+Type=simple
+User=krabs
+Group=krabs
+WorkingDirectory=/home/krabs/.openclaw/workspace/projects/ahoyvpn/backend
+EnvironmentFile=/home/krabs/.openclaw/workspace/projects/ahoyvpn/backend/.env
+ExecStart=/usr/bin/node src/index.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ahoyvpn-backend
+# Protect against OOM kills
+OOMScoreAdjust=-200
+
+[Install]
+WantedBy=multi-user.target

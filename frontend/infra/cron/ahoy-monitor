@@ -1,0 +1,1 @@
+*/30 * * * * root /home/ahoy/monitoring/monitor.sh

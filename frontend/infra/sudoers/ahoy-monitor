@@ -1,0 +1,1 @@
+ahoy ALL=(root) NOPASSWD: /home/ahoy/monitoring/monitor.sh
