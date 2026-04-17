@@ -19,6 +19,10 @@ router.get('/hosted-redirect', paymentController.hostedRedirectBridge);
 router.get('/authorize/relay', paymentController.authorizeRelayResponse);
 router.post('/authorize/relay', paymentController.authorizeRelayResponse);
 
+// Authorize.net relay HTML page (for Accept Hosted relay URL)
+router.get('/relay-html', paymentController.relayHtmlPage);
+router.post('/relay-html', paymentController.relayHtmlPage);
+
 // Invoice status (public callback from Plisio)
 router.get('/invoice/:invoiceId/status', paymentController.getInvoiceStatus);
 

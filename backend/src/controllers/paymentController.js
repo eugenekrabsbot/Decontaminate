@@ -2423,6 +2423,25 @@ const hostedRedirectBridge = async (req, res) => {
 
 
 
+// Serve HTML relay page for Authorize.net Accept Hosted relay URL
+// api.ashx POSTs here after payment; this page auto-redirects customer to /payment/success
+const relayHtmlPage = (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.send(`<!DOCTYPE html>
+<html>
+<head><title>Processing...</title></head>
+<body onload="document.redirect.submit()">
+<form name="redirect" action="https://ahoyvpn.net/payment/success" method="GET">
+<input type="hidden" name="payment" value="success">
+</form>
+<p>Processing your payment... please wait.</p>
+</body>
+</html>`);
+};
+
 const authorizeRelayResponse = async (req, res) => {
 
   try {
@@ -2968,7 +2987,7 @@ module.exports = {
   hostedRedirectBridge,
 
   authorizeRelayResponse,
-
+  relayHtmlPage,
   plisioWebhook,
 
   getInvoiceStatus,
