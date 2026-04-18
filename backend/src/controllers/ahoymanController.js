@@ -655,7 +655,7 @@ const getTaxTransactions = async (req, res) => {
         postal_code,
         country,
         state,
-        base_charge_cents,
+        base_charge_cents AS subtotal_cents,
         tax_rate,
         tax_amount_cents,
         total_amount_cents,
