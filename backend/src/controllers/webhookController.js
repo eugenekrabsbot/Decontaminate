@@ -823,7 +823,29 @@ const authorizeNetWebhook = async (req, res) => {
       }
     }
 
-    const vpnAccount = await createVpnAccount(subscription.user_id, subscription.account_number, planInterval);
+    // --- VPN account: extend existing or create new ---
+    // On ARB renewal: existing VPN account gets extended by 30 days from current_period_end.
+    // On first activation: creates new VPN account (createVpnAccount uses ON CONFLICT so it's safe).
+    const existingVpn = await db.query(
+      'SELECT id FROM vpn_accounts WHERE user_id = $1 LIMIT 1',
+      [subscription.user_id]
+    );
+
+    let vpnAccount;
+    if (existingVpn.rows.length > 0) {
+      // Extend existing VPN account expiry by 30 days from current_period_end
+      const newExpiry = new Date(subscription.current_period_end);
+      newExpiry.setDate(newExpiry.getDate() + 30);
+      const newExpiryYmd = newExpiry.toISOString().slice(0, 10);
+      await db.query(
+        'UPDATE vpn_accounts SET expiry_date = $1, updated_at = NOW() WHERE user_id = $2',
+        [newExpiryYmd, subscription.user_id]
+      );
+      const refreshedVpn = await db.query('SELECT * FROM vpn_accounts WHERE user_id = $1', [subscription.user_id]);
+      vpnAccount = refreshedVpn.rows[0] || { username: '(extended)', password: '(extended)', purewl_uuid: null };
+    } else {
+      vpnAccount = await createVpnAccount(subscription.user_id, subscription.account_number, planInterval);
+    }
 
     const userResult = await db.query('SELECT email FROM users WHERE id = $1', [subscription.user_id]);
     const userEmail = userResult.rows[0]?.email;

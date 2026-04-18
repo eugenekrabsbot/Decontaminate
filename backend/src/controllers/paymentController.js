@@ -1601,6 +1601,10 @@ const createCheckout = async (req, res) => {
 
             total_amount_cents: totalAmountCents,
 
+            postal_code: postalCode,
+
+            state: region,
+
             payer_wallet_address: payerWalletAddress || null
 
           })
@@ -1795,7 +1799,11 @@ const createCheckout = async (req, res) => {
 
               tax_rate: taxRate,
 
-              total_amount_cents: totalAmountCents
+              total_amount_cents: totalAmountCents,
+
+              postal_code: postalCode,
+
+              state: region
 
             })
 
